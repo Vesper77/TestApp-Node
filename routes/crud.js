@@ -110,9 +110,11 @@ module.exports = function(app) {
   app.get('/api/photos/:id', ensureAuthenticated, function(req, res) {
     return PhotoModel.findById(req.params.id, function(err, photo) {
       if (!photo) {
+        log.error('No photos found with this ID');
         return res.json({error: 'Not found'}, 404);
       }
       if (photo.vkID != req.user.vkID) {
+        log.error('This photo belongs to another user');
         return res.json({error: 'This photo belongs to another user'}, 401)
       }
       if (!err) {
@@ -131,9 +133,11 @@ module.exports = function(app) {
   app.put('/api/photos/:id', function(req, res) {
     return PhotoModel.findById(req.params.id, function(err, photo) {
       if (!photo) {
+        log.error('No photos found with this ID');
         return res.json({error: 'Not found'}, 404);
       }
       if (photo.vkID != req.user.vkID) {
+        log.error('This photo belongs to another user');
         return res.json({error: 'This photo belongs to another user'}, 401)
       }
       fs.unlink(photo.path, function(err) {
@@ -184,9 +188,11 @@ module.exports = function(app) {
   app.delete('/api/photos/:id', ensureAuthenticated, function(req, res) {
     return PhotoModel.findById(req.params.id, function(err, photo) {
       if (!photo) {
+        log.error('No photos found with this ID');
         return res.json({error: 'Not found'}, 404);
       }
       if (photo.vkID != req.user.vkID) {
+        log.error('This photo belongs to another user');
         return res.json({error: 'This photo belongs to another user'}, 401)
       }
       fs.unlink(photo.path, function(err) {
