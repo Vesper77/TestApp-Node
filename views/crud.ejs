@@ -1,0 +1,51 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-filestyle.min.js"> </script>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <title>CRUD</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+
+        <div class="block">
+            <input name="id" type="text" placeholder="ID" id="getId">
+            <button class="btn btn-default" id="getOne">GET</button>
+            <p style="float:right">Do not input ID if you want to get all records </p>
+        </div>
+        <div class="block ">
+
+            <input name="name" type="text" placeholder="Name" id="postName" class="">
+            <input name="description" type="text" placeholder="Description" id="postDesc" >
+            <input name="file" type="file" data-classButton="btn btn-primary" data-input="false" id="postPict" style="float: left" class="inputFile">
+
+            <input class="btn btn-default" type="submit" value="POST" id="post" >
+
+        </div>
+
+        <div class="block">
+            <input name="name" type="text" placeholder="Name" id="putName">
+            <input name="description" type="text" placeholder="Description" id="putDesc">
+            <input name="file" type="file" id="putPict" style="float: left" class="inputFile">
+
+            <input type="text" placeholder="ID" id="putId">
+            <button class="btn btn-default" id="put">PUT</button>
+        </div>
+
+
+        <div class="block">
+            <input name="id" type="text" placeholder="ID" id="deleteId">
+            <button class="btn btn-default" id="delete">DELETE</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="js/send.js"> </script>
+</body>
+</html>

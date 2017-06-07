@@ -1,0 +1,9 @@
+.block {
+    margin-bottom: 20px;
+    /*border: 2px solid lightslategray;*/
+    padding:10px;
+    background-color: #B0C4DE;
+}
+.jumbotron {
+    text-align: center;
+}

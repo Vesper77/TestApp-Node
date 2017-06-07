@@ -1,0 +1,16 @@
+{
+  "port": 1337,
+  "mongoose": {
+    "uri": "mongodb://localhost/test"
+  },
+  "auth": {
+    "vk": {
+      "app_id": 6055387,
+      "secret": "14jQH11xOGt6TqImVLIV"
+    }
+
+  },
+  "app" : {
+    "url" : "http://localhost:1337"
+  }
+}
