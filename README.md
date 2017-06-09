@@ -57,7 +57,7 @@ GET localhost:1337/api/photos/?limit5&page=1
 ```
 {"message":"Photo updated","photo":{"_id":"ID","name":"NEWNAME","path":"NEWPATH","description":"NEWDESCRIPTION","vkID":vkID,"__v":0}}
 ```
-При нажатии на DELETE вы посылаете DELETE запрос на  удаление записи с указанным ID
+При нажатии на DELETE вы посылаете DELETE запрос на удаление записи с указанным ID
 
 Будет возвращено
 ```
