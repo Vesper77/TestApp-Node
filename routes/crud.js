@@ -65,6 +65,18 @@ module.exports = function(app) {
   app.post('/api/photos', ensureAuthenticated, function(req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files) {
+      if (!files.file) {
+        log.error('File input is not found');
+        return res.send(409, 'File input is not found');
+      }
+      if (!fields.name) {
+        log.error('Name input is not found');
+        return res.send(409, 'Name input is not found');
+      }
+      if (!fields.description) {
+        log.error('Description input is not found');
+        return res.send(409, 'Description input is not found');
+      }
       var oldpath = files.file.path;
       var newpath = './uploads/' + uuid.v1() + files.file.name;
       var ext = path.extname(newpath);
@@ -78,25 +90,24 @@ module.exports = function(app) {
           log.error(err);
           return res.json({error: err}, 409);
         }
-      });
+        var photo = new PhotoModel({
+          name: fields.name,
+          path: newpath,
+          description: fields.description,
+          vkID: req.user.vkID,
+        });
+        photo.save(function(err) {
+          if (!err) {
+            log.info('Photo created by POST request');
+            return res.json({message: 'Photo created', photo: photo}, 200);
+          } else {
+            log.error(err);
+            res.json({error: 'Server error'}, 500);
+          }
+          log.error('Internal error(%d): %s', res.statusCode, err.message);
 
-      var photo = new PhotoModel({
-        name: fields.name,
-        path: newpath,
-        description: fields.description,
-        vkID: req.user.vkID,
+        })
       });
-      photo.save(function(err) {
-        if (!err) {
-          log.info('Photo created by POST request');
-          return res.json({message: 'Photo created', photo: photo}, 200);
-        } else {
-          log.error(err);
-          res.json({error: 'Server error'}, 500);
-        }
-        log.error('Internal error(%d): %s', res.statusCode, err.message);
-
-      })
 
 
     });
@@ -111,11 +122,11 @@ module.exports = function(app) {
     return PhotoModel.findById(req.params.id, function(err, photo) {
       if (!photo) {
         log.error('No photos found with this ID');
-        return res.json({error: 'Not found'}, 404);
+        return res.send(404, 'Not found');
       }
       if (photo.vkID != req.user.vkID) {
         log.error('This photo belongs to another user');
-        return res.json({error: 'This photo belongs to another user'}, 401)
+        return res.send(401, 'This photo belongs to another user');
       }
       if (!err) {
         log.info('Getting the record by GET request')
@@ -130,24 +141,42 @@ module.exports = function(app) {
   // PUT request:
   // Update the record to given query params and params.id
   // And with the same vkId as record's owner
-  app.put('/api/photos/:id', function(req, res) {
+  app.put('/api/photos/:id', function(req, res, next) {
     return PhotoModel.findById(req.params.id, function(err, photo) {
       if (!photo) {
         log.error('No photos found with this ID');
-        return res.json({error: 'Not found'}, 404);
+        return res.send(404, 'Not found');
       }
       if (photo.vkID != req.user.vkID) {
         log.error('This photo belongs to another user');
-        return res.json({error: 'This photo belongs to another user'}, 401)
+        return res.send(401, 'This photo belongs to another user');
       }
-      fs.unlink(photo.path, function(err) {
-        if (err) {
-          log.error(err);
-          return res.json({error: err}, 149);
-        }
-      });
+
       var form = new formidable.IncomingForm();
       form.parse(req, function(err, fields, files) {
+
+
+        if (!files.file) {
+          log.error('File input is not found');
+          return res.send(409, 'File input is not found');
+        }
+        if (!fields.name) {
+          log.error('Name input is not found');
+          return res.send(409, 'Name input is not found');
+        }
+        if (!fields.description) {
+          log.error('Description input is not found');
+          return res.send(409, 'Description input is not found');
+        }
+
+
+        fs.unlink(photo.path, function(err) {
+          if (err) {
+            log.error(err);
+            return res.json({error: err}, 149);
+          }
+        });
+
         var oldpath = files.file.path;
         var newpath = './uploads/' + uuid.v1() + files.file.name;
         var ext = path.extname(newpath);
@@ -174,11 +203,12 @@ module.exports = function(app) {
                 photo: photo,
               }, 200);
             } else {
-              res.json({error: 'Server error'}, 500);
+              res.send(500, 'Server error');
               log.error('Internal error(%d): %s', res.statusCode, err.message);
             }
           });
         });
+
       });
     })
   });
@@ -189,11 +219,11 @@ module.exports = function(app) {
     return PhotoModel.findById(req.params.id, function(err, photo) {
       if (!photo) {
         log.error('No photos found with this ID');
-        return res.json({error: 'Not found'}, 404);
+        return res.send(404, 'Not found');
       }
       if (photo.vkID != req.user.vkID) {
         log.error('This photo belongs to another user');
-        return res.json({error: 'This photo belongs to another user'}, 401)
+        return res.send(401, 'This photo belongs to another user');
       }
       fs.unlink(photo.path, function(err) {
         if (err) {
@@ -207,7 +237,7 @@ module.exports = function(app) {
           return res.json({message: 'Photo removed'}, 200);
         } else {
           log.error('Internal error(%d): %s', res.statusCode, err.message);
-          return res.json({error: 'Server error'}, 500);
+          res.send(500, 'Server error');
         }
       });
     });
